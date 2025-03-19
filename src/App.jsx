@@ -4,9 +4,10 @@ import {
   Route,
   Link,
   Navigate,
+  useNavigate,
 } from "react-router-dom";
 import { useState } from "react";
-import "./App.css"; // Import the CSS file for styling
+import "./App.css";
 
 export default function App() {
   return (
@@ -41,6 +42,8 @@ export default function App() {
             }
           />
           <Route path="/" element={<Navigate to="/login" />} />
+          {/* Catch-all route for undefined paths */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>
@@ -48,8 +51,14 @@ export default function App() {
 }
 
 function NavBar() {
+  const navigate = useNavigate();
   const isAuthenticated = localStorage.getItem("authToken");
   const username = localStorage.getItem("username");
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/login");
+  };
 
   return (
     <nav className="navbar">
@@ -86,6 +95,7 @@ function NavBar() {
 }
 
 function Signup() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -93,7 +103,7 @@ function Signup() {
     localStorage.setItem("username", username);
     localStorage.setItem("password", password);
     alert("Signup successful! Please login.");
-    window.location.href = "/login";
+    navigate("/login");
   }
 
   return (
@@ -119,6 +129,7 @@ function Signup() {
 }
 
 function Login() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -128,7 +139,7 @@ function Login() {
 
     if (username === storedUsername && password === storedPassword) {
       localStorage.setItem("authToken", "12345689");
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
     } else {
       alert("Invalid credentials");
     }
@@ -185,7 +196,14 @@ function Messages() {
   );
 }
 
-function handleLogout() {
-  localStorage.removeItem("authToken");
-  window.location.href = "/login";
+function NotFound() {
+  return (
+    <div className="page-container">
+      <h2>404: Page Not Found</h2>
+      <p>The page you're looking for does not exist.</p>
+      <Link className="nav-link" to="/login">
+        Return to Login
+      </Link>
+    </div>
+  );
 }
