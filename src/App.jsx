@@ -42,7 +42,7 @@ export default function App() {
             }
           />
           <Route path="/" element={<Navigate to="/login" />} />
-          {/* Catch-all route for undefined paths */}
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
